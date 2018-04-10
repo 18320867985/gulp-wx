@@ -1,0 +1,61 @@
+/*
+ addr 收货地址
+ * */
+
+.addr {
+    margin-top: 10px !important;
+}
+
+.addr-item {
+    position: relative;
+    ul {
+        margin: 0;
+        padding: 10px 10px 10px 15px;
+        background: #fff;
+        .default {
+            font-size: 14px;
+        }
+        li+li {
+            margin-top: 10px;
+        }
+    }
+    .op-box {
+        position: absolute;
+        top: 20px;
+        right: 5px;
+        z-index: 9;
+        // 右边icon
+        >.editaddr-btn {
+            font-size: 28px;
+            color: $text-label;
+            &:active {
+                color: $text-danger;
+            }
+        }
+        // 删除数据
+        >.del-btn {
+           color: $text-label;
+            &:active {
+                color: $text-danger;
+            }
+        }
+    }
+    
+    
+    // 相连的每一项
+    &+.addr-item {
+        margin-top: 10px !important;
+    }
+}
+
+// addr-head-link
+.addr-head-link {
+    position: absolute;
+    right: 10px;
+    top: 11px;
+    z-index: 2;
+    font-size: 18px;
+    &:active {
+        color: $text-danger;
+    }
+}

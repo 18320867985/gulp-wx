@@ -1,0 +1,221 @@
+/*商品详情*/
+
+// 详情图片列表
+.proddtl-imgs {
+    background: #fff;
+    // img 
+    .mui-slider-item {
+        img {
+            width: 100%;
+            height: auto;
+            min-height: 150px;
+            max-height: 400px;
+        }
+    }
+    .desc {
+        margin-top: 10px;
+        padding: 10px 15px;
+        p {
+            font-size: 16px;
+            line-height: 24px;
+            color: #444 !important;
+        }
+    }
+    // rmb
+    .rmb {
+        .iconfont {
+            font-size: 24px;
+             
+        }
+ 
+    }
+    
+}
+
+//商品项选择
+.proddtl-select {
+    margin: 10px 0;
+    .mui-table-view-cell {
+        border: none;
+        .sel {
+            color: $text-h;
+        }
+        .se2 {
+            margin-left: 10px;
+            color: $text-ash;
+            font-size: 14px;
+        }
+    }
+}
+
+.proddtl-select2 {
+    margin: 10px 0;
+    padding: 15px 10px;
+    background: #fff;
+    h4 {
+        margin-bottom: 15px;
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+        li {
+            label,
+            span {
+                color: #777;
+            }
+            &+li {
+                margin-top: 10px;
+            }
+        }
+    }
+}
+
+// 图文详情
+.proddtl-desc {
+    margin-bottom: 10px;
+    img {}
+}
+
+// proddtl-footer
+.proddtl-footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 9;
+    width: 100%;
+    height: 57px;
+    line-height: 57px;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    .item {
+        text-align: center;
+        color: $text-label;
+        box-sizing: border-box;
+        &+.item {
+            border-left: 1px solid #ddd;
+        }
+        // 购物车图标
+        .iconfont {
+            font-size: 24px;
+            vertical-align: middle;
+            color: $text-default;
+            &:active {
+                color: $text-danger;
+            }
+            // 购物车图标
+            &.icon-shopping {
+                position: relative;
+                top: 2px;
+                font-size: 30px;
+            }
+            &+.iconfont {
+                margin-left: 30px;
+            }
+        }
+        // 收藏夹
+        .icon-shoucang{
+            &.active{
+                color:$text-danger;
+            }
+        }
+        
+        .shop-cart {
+            position: relative;
+            margin-right: 10px;
+            // 小圆点
+            .mui-badge {
+                position: absolute;
+                top: -15px;
+                right: 0;
+            }
+        }
+        // 
+        .shop-add {
+            color: $text-label;
+            &:active {
+                color: $text-danger;
+            }
+        }
+        .mui-btn {
+            margin: 0;
+        }
+    }
+}
+
+// 商品项选择
+.proddtl-select {
+    // 可选择菜单 mui-popover
+    .popover-content {
+        background: #fff;
+        padding: 10px 0 20px;
+        
+      //  close
+      .close{
+          
+          margin-right: 10px;
+          color:$text-777;
+          .mui-icon{
+                 font-size: 32px;
+                 
+                 &:active{
+                     color:$text-danger;
+                 }
+          }
+       
+      }
+             
+        .img-box {
+            border-bottom: 1px solid $text-ash-2;
+            img {
+                position: relative;
+                top: -30px;
+                left: 10px;
+                width: 120px;
+                height: 120px;
+                border: 1px solid $text-ash-2;
+                border-radius: 5px;
+            }
+            // ttl 
+            .ttl {
+                padding-left: 20px;
+                .iconfont {
+                    font-size: 28px;
+                }
+                li+li {
+                    margin-top: 10px;
+                }
+            }
+        }
+    }
+    // option
+    .option {
+        margin: 0;
+        padding: 15px;
+        li {
+            label{
+                display: inline-block;
+                height: 31px;
+                line-height: 31px;
+                font-size: 14px;
+            }
+            .radio-btn-item{
+               
+               margin-bottom: 15px;
+               
+               &.active {
+                   background: $text-danger;
+                   color:#fff;
+                    border: 1px solid $text-danger;
+                   
+               }
+            } 
+            &+li {
+              
+                padding-top: 15px;
+                border-top: 1px solid #ddd;
+            }
+            // num 框
+            @include number(120px,30px,#ddd,16px);
+        }
+    }
+}
