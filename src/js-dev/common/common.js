@@ -5,6 +5,7 @@
 ;
 (function() {
 
+	"use strict"
 	// 冲突common兼容
 	var _common = window.common = window.Common = window.com;
 
@@ -25,14 +26,10 @@
 
 	// string  trim
 	Common.extend({
-		trim: function(data) {
-
-			data = data || "";
-			if(typeof data !== "string") {
-				return "";
-			}
-			var str = data.replace(new RegExp("\\s*", "img"), "");
-
+		trim: function(txt) {
+			var str = "";
+			txt = typeof txt === "string" ? txt : "";
+			str = txt.replace(/^\s*|\s*$/img, "");
 			return str;
 
 		},
@@ -53,7 +50,7 @@
 			//从WebAPI获取日期json数据 转换成日期时间戳
 			jsonToDate: function(apidate) {
 				var txts = apidate.replace("/Date(", "").replace(")/", "");
-				return parseInt(txts.trim());
+				return parseInt(Common.trim(txts));
 
 			},
 
@@ -485,7 +482,7 @@
 				expiresDate = typeof expiresDate === "number" ? expiresDate : 0;
 				dt.setDate(dt.getDate() + expiresDate);
 				var expires = dt;
-				document.cookie = encodeURIComponent(cookieName.replace(new RegExp("\\s*", "img"), "")) + "=" + encodeURIComponent(cookieValue) + ";expires=" + expires;
+				document.cookie = encodeURIComponent(Common.trim(cookieName)) + "=" + encodeURIComponent(cookieValue) + ";expires=" + expires;
 
 			},
 
@@ -510,8 +507,8 @@
 
 					var strs2 = strs[i].split("=");
 					try {
-						var _name = decodeURIComponent(strs2[0]).replace(new RegExp("\\s*", "img"), "");
-						var _val = decodeURIComponent(strs2[1]).replace(new RegExp("\\s*", "img"), "");
+						var _name =decodeURIComponent(strs2[0]);
+						var _val =decodeURIComponent(strs2[1]);
 						obj[_name] = _val;
 					} catch(e) {
 
@@ -639,7 +636,7 @@
 				if(navigator.geolocation) {
 					return true;
 				} else {
-					//alert("浏览器不支持地理定位。");
+					alert("浏览器不支持地理定位。");
 					return false;
 				}
 
@@ -666,61 +663,43 @@
 			//获取当前定位的位置
 			getCurrentPosition: function(showPosition) {
 
-				if(Common.geolocation.support) {
-					var option = {
-						enableHighAccuracy: true,
-						timeout: Infinity,
-						maximumAge: 0
-					};
+				if(Common.geolocation.support()) {
 
 					if(typeof showPosition === "function") {
-						window.navigator.geolocation.getCurrentPosition(showPosition, Common.geolocation.showError,option);
+						navigator.geolocation.getCurrentPosition(showPosition, Common.geolocation.showError);
 					}
 
 				}
 			},
 
 			//获取当前定位的位置coords
-			getCoords: function(fn) {
+			getCoords: function() {
 
 				var coords = {};
-				if(Common.geolocation.support) {
-					var option = {
-						enableHighAccuracy: true,
-						timeout: Infinity,
-						maximumAge: 0
-					}
-				
+				if(Common.geolocation.support()) {
 					navigator.geolocation.getCurrentPosition(function(position) {
+						coords.lat = position.coords.latitude; //纬度 
+						coords.lag = position.coords.longitude; //经度 
 
-//
-//						coords.lat = position.coords.latitude; //纬度 
-//						coords.lag = position.coords.longitude; //经度 
+						alert(position)
 
-
-						fn(position.coords);
-					});
+					}, Common.geolocation.showError);
 
 				}
 
-				
+				return coords || null;
 			},
 
 			//获取当前定位的位置coords纬度 
 			getCoordsLat: function() {
 
 				var coords = {};
-				if(Common.geolocation.support) {
-					var option = {
-						enableHighAccuracy: true,
-						timeout: Infinity,
-						maximumAge: 0
-					};
+				if(Common.geolocation.support()) {
 					navigator.geolocation.getCurrentPosition(function(position) {
 
 						coords.lat = position.coords.latitude; //纬度 
 
-					}, Common.geolocation.showError,option);
+					}, Common.geolocation.showError);
 
 				}
 
@@ -730,7 +709,7 @@
 			getCoordsLag: function() {
 
 				var coords = {};
-				if(Common.geolocation.support) {
+				if(Common.geolocation.support()) {
 					navigator.geolocation.getCurrentPosition(function(position) {
 
 						coords.lag = position.coords.longitude; //经度 
@@ -739,7 +718,7 @@
 
 				}
 
-				return coords.lag;
+				return coords.lag || null;
 			},
 
 		}
