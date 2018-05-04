@@ -2,6 +2,7 @@
  * 收货地址
  * **/
 
+
 var address = (function() {
 
 	var obj = {
