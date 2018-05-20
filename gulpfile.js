@@ -56,9 +56,9 @@ var eslint = require("gulp-eslint"); // 检查es5 ees6 js gulp-eshint
  */
 var babel = require("gulp-babel");
 
-//var ts = require("gulp-typescript"); //npm install --save-dev typescript gulp gulp-typescript
+var ts = require("gulp-typescript"); //npm install --save-dev typescript gulp gulp-typescript
 
-//var tsProject = ts.createProject("tsconfig.json");
+var tsProject = ts.createProject("tsconfig.json");
 
 
 // 文件路径
@@ -92,15 +92,18 @@ var paths = {
 	 */
 	jsBabel: [
 
-		"src/js-dev/common/**/*.js", 		// 1.公共模块
+		"src/js-dev/1-common/**/*.js", 		// 1.公共类库
 		
-		"src/js-dev/api/**/*.js", 			// 2.自定api
+		"src/js-dev/2-namespace/**/*.js", 	// 2.命名空间
+		
+		"src/js-dev/3-api/**/*.js", 		// 2.自定api
 
-		"src/js-dev/component/**/*.js", 	// 3.公共组件
+		"src/js-dev/4-component/**/*.js", 	// 3.公共组件
 
-		"src/js-dev/modules/**/*.js" 		// 4.自定义模块
+		"src/js-dev/5-modules/**/*.js" 		// 4.自定义模块
 
 	],
+
 
 	// less文件
 	lessPath: ['./src/css-dev/less/**/*.less'],
@@ -113,9 +116,7 @@ var paths = {
 
 	htmlPath: ['./src/**/*.html'],
 
-	//es6: ['./src/js-dev/libs/es6/*.js'],
-
-	//typeScript: ['./src/js-dev/libs/ts/*.ts'],
+	typeScript: ['./src/js-dev/libs/ts/*.ts'],
 
 }
 
@@ -341,7 +342,7 @@ gulp.task("t_es6", function() {
 gulp.task("t_ts", function() {
 
 	tsProject.src().pipe(tsProject())
-	.js.pipe(gulp.dest("src/js-dev/es5"));
+	.js.pipe(gulp.dest("src/js-dev/ts"));
 
 });
 

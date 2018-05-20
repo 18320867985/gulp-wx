@@ -96,13 +96,13 @@
  * 
  * **/
 
-var muiPullToRefresh = (function(mui, $) {
+namespace.extend(rootObj, "api").muiPullToRefresh = (function(mui, $) {
 
 	if(!mui) {
 		return;
 	}
 
-	var _init = function pullUpToRefresh(obj, fn,oldData) {
+	var _init = function pullUpToRefresh(obj, fn, oldData) {
 		obj.indexPage = typeof obj.indexPage === "number" ? obj.indexPage : 0;
 		obj.maxPage = typeof obj.maxPage === "number" ? obj.maxPage : 0;
 		obj.pullToRefreshBig = typeof obj.pullToRefreshBig === "string" ? obj.pullToRefreshBig : ".pullToRefresh-big";
@@ -110,7 +110,7 @@ var muiPullToRefresh = (function(mui, $) {
 		obj.url = typeof obj.url === "string" ? obj.url : "";
 		obj.obj = obj.obj || {};
 		obj.obj = obj.obj.constructor === Object ? obj.obj : {};
-		obj.endPullUp=false;
+		obj.endPullUp = false;
 
 		obj.fn = typeof obj.fn === "function" ? obj.fn : function() {};
 		obj.showText = obj.showText || {
@@ -126,10 +126,10 @@ var muiPullToRefresh = (function(mui, $) {
 		}
 
 		function getFirstPage(oldData) {
-			var bl = false; 
-			
+			var bl = false;
+
 			// 原有的数据
-			if(oldData){
+			if(oldData) {
 				$(obj.pullToRefreshBig).find(obj.pullToRefreshBox).html("");
 				obj.fn(oldData);
 				//obj.indexPage++; //页码
@@ -137,23 +137,21 @@ var muiPullToRefresh = (function(mui, $) {
 				if(typeof fn === "function") {
 					fn(oldData);
 				}
+			} else {
+
+				// ajax数据 ......		
+				$.get(obj.url + "?pullToRefreshBoxid=" + obj.indexPage, obj.obj, function(data) {
+
+					$(obj.pullToRefreshBig).find(obj.pullToRefreshBox).html("");
+					obj.fn(data);
+					//obj.indexPage++; //页码
+					// 回调函数
+					if(typeof fn === "function") {
+						fn(data);
+					}
+
+				});
 			}
-			else{
-				
-			// ajax数据 ......		
-			$.get(obj.url + "?pullToRefreshBoxid=" + obj.indexPage, obj.obj, function(data) {
-				
-				$(obj.pullToRefreshBig).find(obj.pullToRefreshBox).html("");
-				obj.fn(data);
-				//obj.indexPage++; //页码
-				// 回调函数
-				if(typeof fn === "function") {
-					fn(data);
-				}
-				
-				
-			});
-		}
 
 			// 没有更多数据
 			if(obj.maxPage <= obj.indexPage) {
@@ -170,16 +168,14 @@ var muiPullToRefresh = (function(mui, $) {
 				document.querySelector(obj.pullToRefreshBig).appendChild(div);
 				$(obj.pullToRefreshBig).css("margin-bottom", "0");
 				$(obj.pullToRefreshBig).find(".mui-pull-bottom-tips").remove();
-				
-				 bl=true;
+
+				bl = true;
 			}
-			
+
 			return bl;
-			
 
 		}
-		
-		
+
 		//循环初始化所有下拉刷新，上拉加载。 
 		mui.each(document.querySelectorAll(obj.pullToRefreshBig), function(index, pullRefreshEl) {
 
@@ -188,20 +184,20 @@ var muiPullToRefresh = (function(mui, $) {
 				up: {
 
 					callback: function() {
-						obj.self=this;
+						obj.self = this;
 						var self = this;
 						//self.refresh(true);
 						setTimeout(function() {
 							var ul = self.element.querySelector(obj.pullToRefreshBox);
 
 							//ajax数据 ......		
-							obj.endPullUp=obj.indexPage >= obj.maxPage;
-							if(obj.endPullUp){
-							
+							obj.endPullUp = obj.indexPage >= obj.maxPage;
+							if(obj.endPullUp) {
+
 								return;
 							}
-							var pullToRefreshBoxid=obj.indexPage+1;
-							$.get(obj.url + "?pullToRefreshBoxid=" +pullToRefreshBoxid , obj.obj, function(data) {
+							var pullToRefreshBoxid = obj.indexPage + 1;
+							$.get(obj.url + "?pullToRefreshBoxid=" + pullToRefreshBoxid, obj.obj, function(data) {
 
 								obj.fn(data);
 								obj.indexPage++; //页码

@@ -9714,7 +9714,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 ;
 (function () {
 
+	"use strict";
 	// 冲突common兼容
+
 	var _common = window.common = window.Common = window.com;
 
 	/**创建Common对象**/
@@ -9734,14 +9736,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 	// string  trim
 	Common.extend({
-		trim: function trim(data) {
-
-			data = data || "";
-			if (typeof data !== "string") {
-				return "";
-			}
-			var str = data.replace(new RegExp("\\s*", "img"), "");
-
+		trim: function trim(txt) {
+			var str = "";
+			txt = typeof txt === "string" ? txt : "";
+			str = txt.replace(/^\s*|\s*$/img, "");
 			return str;
 		}
 	});
@@ -9761,7 +9759,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			//从WebAPI获取日期json数据 转换成日期时间戳
 			jsonToDate: function jsonToDate(apidate) {
 				var txts = apidate.replace("/Date(", "").replace(")/", "");
-				return parseInt(txts.trim());
+				return parseInt(Common.trim(txts));
 			},
 
 			// 取当前页面名称(不带后缀名)
@@ -9921,6 +9919,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			// data map
 			map: function map(data, fn) {
 				data = data || [];
+				var arrs = [];
 				if (data.constructor !== Array) {
 					throw new Error("第一个参数必须是个数组，第二是回调函数");
 				}
@@ -9933,11 +9932,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 					for (var i = 0; i < data.length; i++) {
 
-						data[i] = fn(data[i]) || data[i];
+						arrs[i] = fn(data[i]) || data[i];
 					}
 				}
 
-				return data;
+				return arrs;
 			},
 
 			//  data first
@@ -10160,7 +10159,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				expiresDate = typeof expiresDate === "number" ? expiresDate : 0;
 				dt.setDate(dt.getDate() + expiresDate);
 				var expires = dt;
-				document.cookie = encodeURIComponent(cookieName.replace(new RegExp("\\s*", "img"), "")) + "=" + encodeURIComponent(cookieValue) + ";expires=" + expires;
+				document.cookie = encodeURIComponent(Common.trim(cookieName)) + "=" + encodeURIComponent(cookieValue) + ";expires=" + expires;
 			},
 
 			getCookie: function getCookie(cookieName) {
@@ -10183,8 +10182,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 					var strs2 = strs[i].split("=");
 					try {
-						var _name = decodeURIComponent(strs2[0]).replace(new RegExp("\\s*", "img"), "");
-						var _val = decodeURIComponent(strs2[1]).replace(new RegExp("\\s*", "img"), "");
+						var _name = decodeURIComponent(strs2[0]);
+						var _val = decodeURIComponent(strs2[1]);
 						obj[_name] = _val;
 					} catch (e) {}
 				}
@@ -10296,114 +10295,97 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		}
 
 	});
-
-	// exrend geolocation
-	Common.extend({
-		geolocation: {
-
-			// 检测是否支持地理定位
-			support: function support() {
-				if (navigator.geolocation) {
-					return true;
-				} else {
-					//alert("浏览器不支持地理定位。");
-					return false;
-				}
-			},
-
-			//定位失败
-			showError: function showError(error) {
-				switch (error.code) {
-					case error.PERMISSION_DENIED:
-						alert("定位失败,用户拒绝请求地理定位");
-						break;
-					case error.POSITION_UNAVAILABLE:
-						alert("定位失败,位置信息是不可用");
-						break;
-					case error.TIMEOUT:
-						alert("定位失败,请求获取用户位置超时");
-						break;
-					case error.UNKNOWN_ERROR:
-						alert("定位失败,定位系统失效");
-						break;
-				}
-			},
-
-			//获取当前定位的位置
-			getCurrentPosition: function getCurrentPosition(showPosition) {
-
-				if (Common.geolocation.support) {
-					var option = {
-						enableHighAccuracy: true,
-						timeout: Infinity,
-						maximumAge: 0
-					};
-
-					if (typeof showPosition === "function") {
-						window.navigator.geolocation.getCurrentPosition(showPosition, Common.geolocation.showError, option);
-					}
-				}
-			},
-
-			//获取当前定位的位置coords
-			getCoords: function getCoords(fn) {
-
-				var coords = {};
-				if (Common.geolocation.support) {
-					var option = {
-						enableHighAccuracy: true,
-						timeout: Infinity,
-						maximumAge: 0
-					};
-
-					navigator.geolocation.getCurrentPosition(function (position) {
-
-						//
-						//						coords.lat = position.coords.latitude; //纬度 
-						//						coords.lag = position.coords.longitude; //经度 
-
-
-						fn(position.coords);
-					});
-				}
-			},
-
-			//获取当前定位的位置coords纬度 
-			getCoordsLat: function getCoordsLat() {
-
-				var coords = {};
-				if (Common.geolocation.support) {
-					var option = {
-						enableHighAccuracy: true,
-						timeout: Infinity,
-						maximumAge: 0
-					};
-					navigator.geolocation.getCurrentPosition(function (position) {
-
-						coords.lat = position.coords.latitude; //纬度 
-					}, Common.geolocation.showError, option);
-				}
-
-				return coords.lat || null;
-			},
-			//获取当前定位的位置coords经度
-			getCoordsLag: function getCoordsLag() {
-
-				var coords = {};
-				if (Common.geolocation.support) {
-					navigator.geolocation.getCurrentPosition(function (position) {
-
-						coords.lag = position.coords.longitude; //经度 
-					}, Common.geolocation.showError);
-				}
-
-				return coords.lag;
-			}
-
-		}
-
-	});
 })();
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*鸭式变形法*/
+// 定义接口
+function Interface(interName, props) {
+    if (arguments.length !== 2) {
+        throw new Error("parameter length must is two");
+    }
+    if (typeof interName !== "string") {
+        throw new Error("interName must is string");
+    }
+    this.interName = interName;
+    this.props = [];
+    if ((typeof props === "undefined" ? "undefined" : _typeof(props)) === "object" && props.constructor === Array) {
+
+        for (var i in props) {
+            if (typeof props[i] === "string") {
+                this.props.push(props[i]);
+            }
+        }
+    }
+}
+
+// 检查是否实现接口
+Interface.check = function (obj) {
+    if (arguments.length < 2) {
+        throw new Error("arguments  length must  is two");
+    }
+    // 遍历接口
+    for (var i = 1; i < arguments.length; i++) {
+        var inter = arguments[i];
+        if (inter.constructor !== Interface) {
+            throw new Error("not Interface type ");
+        }
+        for (var y in inter.props) {
+            var propName = inter.props[y];
+
+            if (!obj[propName]) {
+                throw new Error(" Interface " + inter.interName + "  not implemented  properties name is " + propName);
+            }
+        }
+    }
+
+    return true;
+};
+
+/*实现例子*/
+
+//// 创建接口 Icat
+//var Icat = new Interface("Icat", ["add", "get"]);
+
+//// 创建类 Cat 并实现Icat接口
+//var Cat = function (name) {
+//    this.name = name;
+//    this.constructor.prototype.add = function () {
+//        alert("add");
+//    }
+//    this.constructor.prototype.get = function () {
+//        alert("get");
+//    }
+
+//    // 检查是否实现接口
+//    Interface.check(this, Icat);
+//}
+
+//var cat1 = new Cat();
+//cat1.add();
+
+var rootName = "wx"; // 顶级命名空间
+var rootObj = window[rootName] = {};
+
+var namespace = {}; // 
+namespace.extend = function (ns, nsString) {
+	if (typeof nsString !== "string") {
+		throw new Error("nsString must string type");
+	}
+	var parent = ns;
+	var arrs = nsString.split(".");
+	for (var i = 0; i < arrs.length; i++) {
+		var prop = arrs[i];
+		if (typeof ns[prop] === "undefined") {
+			parent[prop] = {};
+		}
+		parent = parent[prop];
+	}
+
+	return parent;
+};
+
+/*namespace.extend(rootObj, "api").bsDate=()(function(){})*/
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /*
@@ -10437,7 +10419,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
  * 
  * */
 
-var h5File = function ($, mui) {
+namespace.extend(rootObj, "api").h5File = function ($, mui) {
 
 	var fileUpload = function fileUpload(option) {
 
@@ -10609,7 +10591,7 @@ var h5File = function ($, mui) {
  * 
  * **/
 
-var muiPullToRefresh = function (mui, $) {
+namespace.extend(rootObj, "api").muiPullToRefresh = function (mui, $) {
 
 	if (!mui) {
 		return;
@@ -10746,7 +10728,7 @@ var muiPullToRefresh = function (mui, $) {
  * 
  * **/
 
-var muiSelectDate = function () {
+namespace.extend(rootObj, "api").muiSelectDate = function () {
 
 	var _init = function _init(selector) {
 		selector = selector || ".mui-date";
@@ -10780,7 +10762,8 @@ var muiSelectDate = function () {
 		init: _init
 	};
 }();
-var pickerSelect = function (mui) {
+
+namespace.extend(rootObj, "api").pickerSelect = function (mui) {
 
 	// 	一级选择 
 	var _oneSelect = function oneSelect(selector, data) {
@@ -10865,7 +10848,7 @@ var pickerSelect = function (mui) {
  * wxLazy.init(); // 图片延迟加载
  * */
 
-var wxLazy = function ($) {
+namespace.extend(rootObj, "api").wxLazy = function ($) {
 
 	var _init = function _init() {
 
@@ -10982,116 +10965,6 @@ var wxLazy = function ($) {
   //
   //	});
 }();
-mui.init({
-
-	swipeBack: true //启用右滑关闭功能
-
-});
-
-/*****置顶组件start*********/
-(function ($, mui) {
-
-	$(".icon-back").on("tap", function () {
-
-		if (history.back) {
-			history.back();
-		}
-	});
-
-	$(window).scroll(function () {
-
-		if ($(window).scrollTop() >= 500) {
-			$(".zhiding").show();
-		} else {
-			$(".zhiding").hide();
-		}
-	});
-
-	//置顶点击
-	$(".zhiding").on("tap", function () {
-		mui.scrollTo(0, 300);
-	});
-})(window.Zepto || window.jQuery, mui);
-
-// 页脚的跳转
-$(".mui-bar-tab a").on("tap", function () {
-
-	$(this).removeClass("mui-active");
-	var href = $(this).attr("href");
-	window.location.assign(href);
-
-	return false;
-});
-
-// 头部搜索页的跳转
-$(document).find("[data-toggle=skip]").on("tap", function () {
-	$(this).blur();
-
-	if ($(this).attr("data-toggle") == "skip") {
-		var url = $(this).attr("data-url");
-		if (typeof url !== "undefined") {
-			window.location.href = url;
-		}
-	}
-});
-
-// 加入购物车
-$(document).on("click", ".animate-btn", function (e) {
-
-	var v = $(".shopcar").text() || 0;
-	v = Number(v);
-	v = isNaN(v) ? 0 : v;
-	v = v + 1;
-	animate(e, function () {
-
-		// 存入 localStorage
-		var arrs = com.localStorage.getItem("shopcar") || [];
-		arrs.push({});
-		com.localStorage.setItem("shopcar", arrs);
-		$(".shopcar").text(arrs.length);
-	}); //添加购物车的动画
-});
-
-var animate = function animate(e, fn) {
-
-	// 创建span
-	var span = document.createElement("span");
-	span.classList.add("animate-cart");
-	span.classList.add("iconfont");
-	span.classList.add("icon-shopping");
-	$("body").append(span);
-	var els = $(".animate-cart");
-	els.show();
-	// 开始位置
-	els.css({
-		left: e.clientX,
-		top: e.clientY
-	});
-
-	// 结束位置
-	//window.innerHeight  兼容所以手机端的和pc端    
-	var _top2 = window.innerHeight - $(".footer").height();
-	var _left2 = $(".footer .shopcar").offset().left;
-	els.animate({
-		top: _top2 - 1,
-		left: _left2 + 1
-
-	}, 1000, function () {
-		if (typeof fn === "function") {
-			fn();
-		}
-		els.hide(200).remove();
-	});
-};
-
-// 获取购物车数量
-shopCar();
-
-function shopCar() {
-	var v = com.localStorage.getItem("shopcar") || 0;
-
-	$(".shopcar-local").text(v.length);
-}
 /*
   
 <div class="number" >
@@ -11298,7 +11171,7 @@ function shopCar() {
     $(".tab-content", p).find(target).addClass("active");
 
     // 点击触发自定义事件 
-    $(this).trigger("tab_select", this);
+    $(this).trigger("tab_select", [this]);
   });
 }(window.jQuery || window.Zepto);
 /**
@@ -11513,481 +11386,47 @@ function shopCar() {
 		$(this).trigger("topBottomTab_tap", [this]);
 	});
 }(window.jQuery || window.Zepto);
-/**
- * 收货地址
- * **/
 
-var address = function () {
 
-	var obj = {
-		id: 1,
-		isDefault: true, // 是否设为默认值
-		name: "刘小明",
-		phone: "13488889999",
-		address: "广东省-深圳市-福田区",
-		dtlAddress: "福华路海鹰大厦28E"
-	};
-	var list = [];
-	//list.push(obj);
-
-	// 获取地址列表
-	var _getAddressList = function _getAddressList() {
-
-		return com.localStorage.getItem("address") || [];
-	};
-	// 获取地址列表
-	var _setAddress = function _setAddress(obj) {
-		var arrs = com.localStorage.getItem("address") || [];
-
-		// 设为默认
-		if (obj.isDefault == "1") {
-			com.list.map(arrs, function (item) {
-				item.isDefault = false;
-			});
-		}
-		obj.isDefault = Number(obj.isDefault);
-		//自增id
-		var lastObj = common.list.last(arrs);
-		obj.id = lastObj ? lastObj.id + 1 : 1;
-
-		var index = arrs.push(obj);
-		com.localStorage.setItem("address", arrs);
-		return index;
-	};
-
-	// 根据id去查询数据
-	function _where(qid) {
-		return com.list.where(com.localStorage.getItem("address") || [], function (item) {
-			return item.id == qid;
-		});
-	};
-
-	// 修改数据
-	function _edit(obj) {
-		var data = com.localStorage.getItem("address") || [];
-
-		var index = com.list.index(data, function (item) {
-			return item.id == obj.id;
-		});
-
-		// 设置默认值
-		if (Number(obj.isDefault)) {
-			com.list.map(data, function (item) {
-				item.isDefault = 0;
-				return item;
-			});
-		}
-		data.splice(index, 1, obj);
-		com.localStorage.setItem("address", data);
-		return true;
-	}
-
-	// 删除数据
-	function _delete(id) {
-		var data = com.localStorage.getItem("address") || [];
-
-		var index = com.list.index(data, function (item) {
-			return id === item.id;
-		});
-
-		data.splice(index, 1);
-		com.localStorage.setItem("address", data);
-		return index;
-	};
-
-	return {
-		getAddressList: _getAddressList,
-		setAddress: _setAddress,
-		where: _where,
-		edit: _edit,
-		delete: _delete
-	};
-}();
-/*
- 登录信息
- * */
-
-var adminInfo = function () {
-
-	var _loginInfo = {
-		isLogin: false,
-		userName: "admin",
-		pwd: "12345678"
-		// 是否登陆
-	};var _getLogin = function _getLogin() {
-
-		var Info = common.localStorage.getItem("loginInfo") || _loginInfo;
-
-		return Info;
-	};
-
-	// 是否登陆
-	var _setLogin = function _setLogin(userName, pwd) {
-
-		userName = userName || "";
-		pwd = pwd || "";
-
-		if (_loginInfo.userName === userName && _loginInfo.pwd === pwd) {
-			_loginInfo.isLogin = true;
-			common.localStorage.setItem("loginInfo", _loginInfo);
-			return true;
-		} else {
-			return false;
-		}
-	};
-
-	// 退出登录
-	var _logout = function _logout() {
-
-		common.localStorage.removeItem("loginInfo");
-	};
-
-	return {
-		getLogin: _getLogin,
-		setLogin: _setLogin,
-		logout: _logout
-
-	};
-}();
-/**
- * baseset 修改基本信息
- * 
- * **/
-
-var baseset = function () {
-
-	var edit = function edit(fn) {
-
-		//修改show
-		$(".baseset-xx .edit").on("tap", function () {
-			$(".baseinfo-alert").show();
-			var v = $(this).find("span").text();
-			var p = $(".baseinfo-alert");
-
-			$(".back-ttl", p).text($(this).prevAll("label").text());
-			$(p).find(".txt-v").val(v).focus(); // 内容值
-			$(p).find(".txt-v").attr("data-filed", $(this).attr("data-filed"));
-			var pattern = $(this).attr("data-pattern");
-			var pattern_msg = $(this).attr("data-pattern-msg");
-			var data_empty = $(this).attr("data-empty");
-			$(p).find(".txt-v").attr("data-empty", data_empty);
-			if (typeof pattern !== "undefined") {
-				$(p).find(".txt-v").attr("data-pattern", pattern);
-				$(p).find(".txt-v").attr("data-pattern-msg", pattern_msg);
-			} else {
-				$(p).find(".txt-v").removeAttr("data-pattern");
-				$(p).find(".txt-v").removeAttr("data-pattern-msg");
-			}
-		});
-
-		// 返回hide
-		$(".baseinfo-alert .close").on("tap", function () {
-			$(this).parents(".baseinfo-alert").hide();
-		});
-
-		// 保存
-		$(".baseinfo-alert .btn").on("tap", function () {
-			edit.apply(this);
-		});
-
-		// 修改信息api
-		function edit() {
-
-			var p = $(".baseinfo-alert");
-			var v = $(".txt-v", p).val(); // 内容值
-			var filed = $(".txt-v", p).attr("data-filed") || ""; //字段名称
-			var regx_v = $(".txt-v", p).attr("data-pattern"); //字段名称
-			var regx_msg = $(".txt-v", p).attr("data-pattern-msg") || ""; //字段名称
-			var btn_text = $(this).attr("data-btn-text");
-			var empty = $(".txt-v", p).attr("data-empty") || "not data  is empty";
-			// 非空验证
-			if (v == "" || v === null) {
-				mui.alert(empty, " ", btn_text, function () {});
-				return;
-			}
-			// 正则验证
-			var regx = new RegExp(regx_v, "ig");
-			if (!regx.test(v)) {
-				mui.alert(regx_msg, " ", btn_text, function () {});
-				return;
-			}
-
-			if (typeof fn !== "undefined") {
-				fn(v, filed);
-			}
-
-			$(".baseinfo-alert").hide(); // 大框hide
-			// $(".txt-v", p).val();
-			//	});
-		};
-	};
-
-	return {
-		edit: edit
-	};
-}();
-/*
- * 商品批量购买
- * */
-
-var batch = function () {
-
-	var _init = function _init() {
-
-		// checkbox 选择
-		$(".batch-select .check-all").on("tap", function () {
-
-			if ($(this).attr("data-bl")) {
-				$(this).removeClass("icon-xuanzhongduigou").addClass("icon-checknormal");
-				$(this).removeAttr("data-bl");
-				select_ck(false);
-			} else {
-				$(this).removeClass("icon-checknormal").addClass("icon-xuanzhongduigou");
-				$(this).attr("data-bl", true);
-				select_ck(true);
-			}
-		});
-
-		//	label-click	
-		$(".batch-select  .label-click").on("tap", function () {
-			$(".check-all", ".batch-select").trigger("tap");
-		});
-
-		// checkbox function
-		function select_ck(bl) {
-
-			if (bl) {
-				var els = $(".shop-cont input[type=checkbox]");
-				els.attr("checked", false);
-				els.click();
-				els.attr("checked", true);
-			} else {
-				var els = $(".shop-cont input[type=checkbox]");
-				els.click();
-				els.attr("checked", false);
-			}
-		}
-	};
-
-	return {
-		init: _init
-	};
-}();
-/*
- 
- * */
-
-var collection = function () {
-
-	var _init = function _init() {
-
-		// 编辑
-		$(".head-right-btn").on("tap", function () {
-			var o = $(this).attr("data-text") || {};
-			o = JSON.parse(o);
-			var isEdit = $(this).attr("data-edit");
-
-			if (typeof isEdit === "undefined") {
-
-				// 编辑
-				$(this).text(o.complate);
-				$(this).attr("data-edit", true);
-				isShow(false);
-				select_ck(false);
-				$(".collection-select .check-all").removeClass("icon-xuanzhongduigou").addClass("icon-checknormal");
-				$(".collection-select .check-all").removeAttr("data-bl");
-				$(".collection-select").show();
-			} else {
-
-				//完成
-				$(this).text(o.edit);
-				$(this).removeAttr("data-edit");
-				isShow(true);
-				select_ck(false);
-				$(".collection-select .check-all").removeClass("icon-xuanzhongduigou").addClass("icon-checknormal");
-				$(".collection-select .check-all").removeAttr("data-bl");
-				$(".collection-select").hide();
-			}
-		});
-
-		// 结算与删除 show  or  hide
-		function isShow(bl) {
-
-			if (bl) {
-				$(".shop-select .edit").show();
-				$(".shop-select .complate").hide();
-				$(".shop-item input[type=checkbox]").hide();
-			} else {
-				$(".shop-select .edit").hide();
-				$(".shop-select .complate").show();
-				$(".shop-item input[type=checkbox]").show();
-			}
-		}
-
-		// checkbox 选择
-		$(".collection-select .check-all").on("tap", function () {
-
-			if ($(this).attr("data-bl")) {
-				$(this).removeClass("icon-xuanzhongduigou").addClass("icon-checknormal");
-				$(this).removeAttr("data-bl");
-				select_ck(false);
-			} else {
-				$(this).removeClass("icon-checknormal").addClass("icon-xuanzhongduigou");
-				$(this).attr("data-bl", true);
-				select_ck(true);
-			}
-		});
-
-		//	label-click	
-		$(".collection-select  .label-click").on("tap", function () {
-			$(".check-all", ".collection-select").trigger("tap");
-		});
-
-		// checkbox function
-		function select_ck(bl) {
-
-			if (bl) {
-				var els = $(".shop-cont input[type=checkbox]");
-				els.attr("checked", false);
-				els.click();
-				els.attr("checked", true);
-			} else {
-				var els = $(".shop-cont input[type=checkbox]");
-				els.click();
-				els.attr("checked", false);
-			}
-		}
-	};
-
-	return {
-		init: _init
-	};
-}();
-var index = function () {
+namespace.extend(rootObj, "page").index = function () {
 
 	// 添加购物车的动画
-	//	var _animate = function() {
-	//
-	//		$(document).on("click", ".animate-btn", function(e) {
-	//
-	//			var tt = $(document).height() - $(this).offset().top;
-	//			// 创建span
-	//			var span = document.createElement("span");
-	//			span.classList.add("animate-cart");
-	//			span.classList.add("iconfont");
-	//			span.classList.add("icon-shopping");
-	//			$("body").append(span)
-	//			var els = $(".animate-cart");
-	//			els.show();
-	//			// 开始位置
-	//			els.css({
-	//				left: e.clientX,
-	//				top: e.clientY
-	//			});
-	//
-	//			// 结束位置
-	//			var _top2 = $(window).height() - $(".footer").height();
-	//			//alert(_top2)
-	//
-	//			var _left2 = $(".footer .shopcar").offset().left;
-	//			els.animate({
-	//				top: _top2,
-	//				left: _left2,
-	//
-	//			}, 1000, function() {
-	//				els.fadeOut(200).remove();
-	//			});
-	//
-	//		});
-	//	}
-	//
-	//	return {
-	//		animate: _animate
-	//	}
+	var _animate = function _animate() {
+		$(document).on("click", ".animate-btn", function (e) {
 
-}();
-var shop = function () {
+			var tt = $(document).height() - $(this).offset().top;
 
-	var _init = function _init() {
+			// 创建span
+			var span = document.createElement("span");
+			span.classList.add("animate-cart");
+			span.classList.add("iconfont");
+			span.classList.add("icon-shopping");
+			$("body").append(span);
+			var els = $(".animate-cart");
+			els.show();
 
-		// 编辑
-		$(".head-right-btn").on("tap", function () {
-			var o = $(this).attr("data-text") || {};
-			o = JSON.parse(o);
-			var isEdit = $(this).attr("data-edit");
+			// 开始位置
+			els.css({
+				left: e.clientX,
+				top: e.clientY
+			});
 
-			if (typeof isEdit === "undefined") {
+			// 结束位置
+			var _top2 = $(window).height() - $(".footer").height();
+			//alert(_top2)
 
-				// 编辑
-				$(this).text(o.complate);
-				$(this).attr("data-edit", true);
-				isShow(false);
-				select_ck(false);
-				$(".shop-select .check-all").removeClass("icon-xuanzhongduigou").addClass("icon-checknormal");
-				$(".shop-select .check-all").removeAttr("data-bl");
-			} else {
+			var _left2 = $(".footer .shopcar").offset().left;
+			els.animate({
+				top: _top2,
+				left: _left2
 
-				//完成
-				$(this).text(o.edit);
-				$(this).removeAttr("data-edit");
-				isShow(true);
-				select_ck(false);
-				$(".shop-select .check-all").removeClass("icon-xuanzhongduigou").addClass("icon-checknormal");
-				$(".shop-select .check-all").removeAttr("data-bl");
-				$(".shop-select").find(".price").text("0.00");
-				$(".shop-select").find(".count").text("0");
-			}
+			}, 1000, function () {
+				els.fadeOut(200).remove();
+			});
 		});
-
-		// 结算与删除 show  or  hide
-		function isShow(bl) {
-
-			if (bl) {
-				$(".shop-select .edit").show();
-				$(".shop-select .complate").hide();
-			} else {
-				$(".shop-select .edit").hide();
-				$(".shop-select .complate").show();
-			}
-		}
-
-		// checkbox 选择
-		$(".shop-select .check-all").on("tap", function () {
-
-			if ($(this).attr("data-bl")) {
-				$(this).removeClass("icon-xuanzhongduigou").addClass("icon-checknormal");
-				$(this).removeAttr("data-bl");
-				select_ck(false);
-			} else {
-				$(this).removeClass("icon-checknormal").addClass("icon-xuanzhongduigou");
-				$(this).attr("data-bl", true);
-				select_ck(true);
-			}
-		});
-
-		//	label-click	
-		$(".shop-select .label-click").on("tap", function () {
-			$(".shop-select .check-all").trigger("tap");
-		});
-
-		// checkbox function
-		function select_ck(bl) {
-
-			if (bl) {
-				var els = $(".shop-cont input[type=checkbox]");
-				els.attr("checked", false);
-				els.click();
-				els.attr("checked", true);
-			} else {
-				var els = $(".shop-cont input[type=checkbox]");
-				els.click();
-				els.attr("checked", false);
-			}
-		}
 	};
 
 	return {
-		init: _init
+		animate: _animate
 	};
 }();
-/*es6*/
