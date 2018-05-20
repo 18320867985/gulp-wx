@@ -116,7 +116,7 @@ var paths = {
 
 	htmlPath: ['./src/**/*.html'],
 
-	typeScript: ['./src/js-dev/libs/ts/*.ts'],
+	typeScript: ['./src/js-dev/ts/*.ts'],
 
 }
 
