@@ -13,8 +13,8 @@
 
 namespace.extend(rootObj, "api").wxLazy = (function($) {
 
-	var _init = function() {
 
+	var _init = function() {
 		var window_h = $(window).height();
 
 		$(window).scroll(function() {
@@ -23,29 +23,26 @@ namespace.extend(rootObj, "api").wxLazy = (function($) {
 
 				$(".load-lazy").each(function() {
 
-					var img_h = parseInt($(this).offset().top) - parseInt(window_h);
-					var img_h2 = parseInt($(this).offset().top) + $(this).height();
-					if($(window).scrollTop() >= img_h && $(window).scrollTop() < img_h2) {
+					var img_h = parseInt($(this).offsetTop()) - parseInt(window_h);
 
-						// set src
-						var _src = $(this).attr("src") || "";
-						var _src2 = $(this).attr("data-src") || "";
-						if(_src.trim() !== _src2.trim()) {
+					// set src
+					var _src = $(this).attr("src") || "";
+					var _src2 = $(this).attr("data-src") || "";
 
-							// is support animate
-							if($(this).animate) {
-								$(this).attr("src", $(this).attr("data-src")).animate({
+					if(_src.trim() !== _src2.trim()) {
 
-									"opacity": 0.8
-								}, 400).animate({
+						// is support animate
+						if($(this).animate) {
+							$(this).attr("src", $(this).attr("data-src")).animate({
 
-									"opacity": 1
-								}, 400);
+								"opacity": 0.8
+							}, 400).animate({
 
-							} else {
-								$(this).attr("src", $(this).attr("data-src"));
-							}
+								"opacity": 1
+							}, 400);
 
+						} else {
+							$(this).attr("src", $(this).attr("data-src")).hide().show();
 						}
 
 					}
@@ -69,4 +66,4 @@ namespace.extend(rootObj, "api").wxLazy = (function($) {
 		reset: _reset
 	}
 
-})(window.jQuery || window.Zepto);
+})(window.jQuery || window.Zepto || window.m);
